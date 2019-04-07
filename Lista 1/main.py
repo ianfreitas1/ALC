@@ -1,4 +1,4 @@
-from exercicio1 import *
+from lista1 import *
 
 if __name__ == "__main__":
     print "1: Decomposicao LU"
