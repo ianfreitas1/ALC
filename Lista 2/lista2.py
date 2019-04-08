@@ -1,11 +1,10 @@
-from math import fabs
+from math import fabs, sqrt
 
 # Calculo do autovalor e autovetor correspondente utilizando o Power Method
 def powerMethod(A):
     n = len(A)
     X0 = [1.0 for i in range(n)]
     Y = multMV(A, X0)
-    X1 = [0.0 for i in range(n)]
     y0 = 1
     y1 = Y[0]
     k = 1
@@ -26,6 +25,42 @@ def powerMethod(A):
     print "Autovetor: " + str(X0)
     print "Iteracoes: " + str(k)
 
+# Metodo de Gauss-Seidel para resolucao de sistemas lineares
+def gaussSeidel(A,B):
+    n = len(A)
+    X0 = [1.0 for i in range(n)]
+    tol = 10**(-2)
+    X1 = [0.0 for i in range(n)]
+    R = tol + 1
+    i = 0
+    numerador = 0
+    denominador = 0
+    c = 0
+    d = 0
+    while (R > tol):
+        for j in range(n):
+            c = mult(A[j][:j], X1[:j])
+            d = mult(A[j][j+1:], X0[j+1:])
+            X1[j] = (B[j] - c - d)/A[j][j]
+        for z in range(n):
+            numerador += (X1[z]-X0[z])**2
+            denominador += X1[z]**2
+        R = float(sqrt(numerador))/sqrt(denominador)
+        X0 = X1
+        i += 1
+    print(X1)
+    print(R)
+    print("Iteracoes: " + str(i))
+
+# Funcao auxiliar de Gauss-Seidel para multiplicacao de vetores
+def mult(A, B):
+    s = 0
+    for i in range(len(A)):
+        for j in range(len(B)):
+            if (i==j):
+                s += A[i]*B[i]
+    return s
+    
 # Retorno de multiplicacao matriz x vetor. Funcao auxiliar do Power Method
 def multMV(m, v):
     rows = len(m)
@@ -39,4 +74,6 @@ def multMV(m, v):
         w[j],sum = sum,0
     return w
     
-powerMethod([[1,0.2,0],[0.2,1,0.5],[0,0.5,1]])
+powerMethod([[3,2,0],[2,3,-1],[0,-1,3]])
+gaussSeidel([[3,-1,-1],[-1,3,-1],[-1,-1,3]],[1,2,1])
+
