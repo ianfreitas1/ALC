@@ -25,6 +25,32 @@ def powerMethod(A):
     print "Autovetor: " + str(X0)
     print "Iteracoes: " + str(k)
 
+# Metodo de Jacobi para resolucao de sistemas lineares
+def jacobiIterativo(A, B):
+    n = len(A)
+    X0 = [1.0 for i in range(n)]
+    tol = 10**(-2)
+    X1 = [0.0 for i in range(n)]
+    R = tol + 1
+    i = 0
+    numerador = denominador = 0
+    while (R > tol):
+        for j in range(n):
+            c = 0
+            for k in range(n):
+                if (j!=k):
+                    c += (A[j][k] * X0[k])
+                X1[j] = (B[j]-c)/A[j][j]
+        for z in range(n):
+            numerador += (X1[z]-X0[z])**2
+            denominador += X1[z]**2
+        R = float(sqrt(numerador))/sqrt(denominador)
+        X0 = X1
+        i += 1
+    print X1
+    print("Iteracoes: " + str(i))
+    
+    
 # Metodo de Gauss-Seidel para resolucao de sistemas lineares
 def gaussSeidel(A,B):
     n = len(A)
@@ -74,6 +100,7 @@ def multMV(m, v):
         w[j],sum = sum,0
     return w
     
-powerMethod([[3,2,0],[2,3,-1],[0,-1,3]])
-gaussSeidel([[3,-1,-1],[-1,3,-1],[-1,-1,3]],[1,2,1])
+#powerMethod([[3,2,0],[2,3,-1],[0,-1,3]])
+#gaussSeidel([[3,-1,-1],[-1,3,-1],[-1,-1,3]],[1,2,1])
+#jacobiIterativo([[3,-1,-1],[-1,3,-1],[-1,-1,3]],[1,2,1])
 
