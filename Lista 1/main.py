@@ -14,7 +14,7 @@ if __name__ == "__main__":
             for j in range(tam):
                 a = float(input("A" + str(i) + str(j) + ": "))
                 matriz[i][j] = a
-        print decomposicaoLU(matriz)
+        print "LU: " + str(decomposicaoLU(matriz))
     elif resposta == 2:
         tam = int(input("Escolha o tamanho da matriz quadrada: "))
         matriz = [[0.0]*tam for i in range(tam)]
@@ -36,7 +36,8 @@ if __name__ == "__main__":
             b = float(input("B" + str(i) + ": "))
             B.append(b)
         A = decomposicaoLU(matriz)
-        print subTras(A, subFrente(A, B))
+        print "Y: " + str(subFrente(A, B))
+        print "X: " + str(subTras(A, subFrente(A, B)))
     elif resposta == 4:
         tam = int(input("Escolha o tamanho da matriz quadrada: "))
         matriz = [[0.0]*tam for i in range(tam)]
@@ -68,7 +69,8 @@ if __name__ == "__main__":
         B = [4.0, 0.0, 8.0, 0.0, 12.0, 0.0, 8.0, 0.0, 4.0, 0.0]
         print "Resolvendo AX=B utilizando decomposicao LU"
         A2 = decomposicaoLU(A)
-        print subTras(A2, subFrente(A2, B))
+        print "Y: " + str(subFrente(A2, B))
+        print "X: " + str(subTras(A2, subFrente(A2, B)))
         print "----------------------------------------------"
         print "Resolvendo AX=B utilizando decomposicao de Cholesky"
         A = [[16, 9, 8, 7, 6, 5, 4, 3, 2, 1],

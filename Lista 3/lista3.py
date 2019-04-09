@@ -33,4 +33,4 @@ def multMV(m, v):
         w[j],sum = sum,0
     return w
 
-print regressaoLinear([1,2,3],[2,3.5,6.5])
+#print regressaoLinear([1,2,3],[2,3.5,6.5])

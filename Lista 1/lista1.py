@@ -1,36 +1,12 @@
 #import sys
-from math import sqrt
-
-
-A3 = [[16, 9, 8, 7, 6, 5, 4, 3, 2, 1],
-     [9, 17, 9, 8, 7, 6, 5, 4, 3, 2],
-     [8, 9, 18, 9, 8, 7, 6, 5, 4, 3],
-     [7, 8, 9, 19, 9, 8, 7, 6, 5, 4],
-     [6, 7, 8, 9, 18, 9, 8, 7, 6, 5],
-     [5, 6, 7, 8, 9, 17, 9, 8, 7, 6],
-     [4, 5, 6, 7, 8, 9, 16, 9, 8, 7],
-     [3, 4, 5, 6, 7, 8, 9, 15, 9, 8],
-     [2, 3, 4, 5, 6, 7, 8, 9, 14, 9],
-     [1, 2, 3, 4, 5, 6, 7, 8, 9, 13]]
-B3 = [4.0, 0.0, 8.0, 0.0, 12.0, 0.0, 8.0, 0.0, 4.0, 0.0]
-Alu = [[1,2,2],
-     [4,4,2],
-     [4,6,4]]
-Ua = [[1,2,2],
-     [0,-4,-6],
-     [0,0,-1]]
-Ya = [3,-6,1]
-La = [[1,0,0],
-      [4,1,0],
-      [4,0.5,1]]
-Blu = [3,6,10]
-Bch = [0.6,-0.3,-0.6]
-Ach = [[1,0.2,0.4],
-     [0.2,1,0.5],
-     [0.4,0.5,1]]
+import math
+import numpy as np
 
 # Funcao que retorna a propria matriz apos a decomposicao LU
 def decomposicaoLU(matriz):
+    det = np.linalg.det(matriz)
+    if (np.allclose([det], [0], 1e-8)):
+        raise ValueError("Erro: Matriz singular")
     n = len(matriz)
     for k in range(n):
         for i in range(k+1, n):
@@ -42,12 +18,14 @@ def decomposicaoLU(matriz):
 
 # Funcao que retorna a triangular inferior apos a decomposicao de Cholesky
 def Cholesky(A):
+    if (np.allclose(A, transposta(A), 1e-8) == 0):
+        raise ValueError("Erro: Matriz nao simetrica")
     n = len(A)
     L = [[0.0] * n for i in range(n)]
     for i in range(n):
         for j in range(i+1):
             s = sum(L[i][k]*L[j][k] for k in range(j))
-            L[i][j] = sqrt(A[i][i]-s) if (i==j) else (1.0/L[j][j]*(A[i][j]-s))
+            L[i][j] = math.sqrt(A[i][i]-s) if (i==j) else (1.0/L[j][j]*(A[i][j]-s))
     return L
 
 # Funcao que realiza uma substituicao para frente para decomposicao LU

@@ -1,4 +1,5 @@
-from math import fabs, sqrt, cos, sin, pi, atan2
+import math
+import numpy as np
 
 # Calculo do autovalor e autovetor correspondente utilizando o Power Method
 def powerMethod(A):
@@ -11,7 +12,7 @@ def powerMethod(A):
     for i in range(n):
         Y[i] = Y[i]/y1
         X0 = Y
-    R = fabs(y1 - y0)/y1
+    R = math.fabs(y1 - y0)/y1
     while (R>0.001):
         y0 = y1
         Y = multMV(A, X0)
@@ -19,7 +20,7 @@ def powerMethod(A):
         for i in range(n):
             Y[i] = Y[i]/y1
             X0 = Y
-        R = fabs(y1-y0)/y1
+        R = math.fabs(y1-y0)/y1
         k+=1
     print "Autovalor: " + str(y1)
     print "Autovetor: " + str(X0)
@@ -27,6 +28,8 @@ def powerMethod(A):
 
 # Calculo dos autovalores e autovetores correspondentes utilizando o metodo de Jacobi    
 def jacobiNumerico(A):
+    if (np.allclose(A, transposta(A), 1e-8) == 0):
+        raise ValueError("Erro: Matriz nao simetrica")
     n = len(A)
     X = [[float(i==j) for j in range(n)] for i in range(n)]
     tol = 10**(-3)
@@ -46,6 +49,8 @@ def jacobiNumerico(A):
         
 # Metodo de Jacobi para resolucao de sistemas lineares
 def jacobiIterativo(A, B):
+    if (diagDominante(A) == False):
+        raise ValueError("Erro: Matriz nao e diagonal dominante")
     n = len(A)
     X0 = [1.0 for i in range(n)]
     tol = 10**(-2)
@@ -63,15 +68,17 @@ def jacobiIterativo(A, B):
         for z in range(n):
             numerador += (X1[z]-X0[z])**2
             denominador += X1[z]**2
-        R = float(sqrt(numerador))/sqrt(denominador)
+        R = float(math.sqrt(numerador))/math.sqrt(denominador)
         X0 = X1
         i += 1
-    print X1
+    print("X1: ", X1)
     print("Iteracoes: " + str(i))
     
     
 # Metodo de Gauss-Seidel para resolucao de sistemas lineares
 def gaussSeidel(A,B):
+    if (diagDominante(A) == False):
+        raise ValueError("Erro: Matriz nao e diagonal dominante")
     n = len(A)
     X0 = [1.0 for i in range(n)]
     tol = 10**(-2)
@@ -90,13 +97,22 @@ def gaussSeidel(A,B):
         for z in range(n):
             numerador += (X1[z]-X0[z])**2
             denominador += X1[z]**2
-        R = float(sqrt(numerador))/sqrt(denominador)
+        R = float(math.sqrt(numerador))/math.sqrt(denominador)
         X0 = X1
         i += 1
-    print(X1)
-    print(R)
+    print("X1: ", X1)
+    print("R: ", R)
     print("Iteracoes: " + str(i))
 
+
+def diagDominante(A):
+    n = len(A)
+    for i in range(n):
+        for j in range(n):
+            if (i != j and math.fabs(A[i][i]) >= math.fabs(A[i][j]) and math.fabs(A[i][i]) >= math.fabs(A[j][i])):
+                return True
+    return False
+                
 # Funcao auxiliar de Jacobi que retorna o maior elemento fora da diagonal da matriz
 def maxElem(A):
     n = len(A)
@@ -111,9 +127,9 @@ def maxElem(A):
 # Retorna o valor de phi para o metodo de Jacobi
 def phi(A, maxi):
     if(A[maxi[0]][maxi[0]] == A[maxi[1]][maxi[1]]):
-        return pi/4
+        return math.pi/4
     else:
-        return atan2(2*A[maxi[0]][maxi[1]], (A[maxi[0]][maxi[0]] - A[maxi[1]][maxi[1]]))/2
+        return math.atan2(2*A[maxi[0]][maxi[1]], (A[maxi[0]][maxi[0]] - A[maxi[1]][maxi[1]]))/2
 
 # Retorna a matriz P utilizada no metodo de Jacobi
 def matrizP(A, maxi):
@@ -123,10 +139,10 @@ def matrizP(A, maxi):
         P[i][i] = 1
         
     phi1 = phi(A, maxi)
-    P[maxi[0]][maxi[0]] = cos(phi1)
-    P[maxi[1]][maxi[1]] = cos(phi1)
-    P[maxi[0]][maxi[1]] = -sin(phi1)
-    P[maxi[1]][maxi[0]] = sin(phi1)
+    P[maxi[0]][maxi[0]] = math.cos(phi1)
+    P[maxi[1]][maxi[1]] = math.cos(phi1)
+    P[maxi[0]][maxi[1]] = -math.sin(phi1)
+    P[maxi[1]][maxi[0]] = math.sin(phi1)
     
     return P
 
@@ -174,4 +190,4 @@ def transposta(matriz):
 #powerMethod([[3,2,0],[2,3,-1],[0,-1,3]])
 #gaussSeidel([[3,-1,-1],[-1,3,-1],[-1,-1,3]],[1,2,1])
 #jacobiIterativo([[3,-1,-1],[-1,3,-1],[-1,-1,3]],[1,2,1])
-print jacobiNumerico([[3,0.4,5],[0.4,4,0.1],[5,0.1,-2]])
+#print jacobiNumerico([[3,0.4,5],[0.4,4,0.1],[5,0.1,-2]])
