@@ -14,7 +14,7 @@ if __name__ == "__main__":
             for j in range(tam):
                 a = float(input("A" + str(i) + str(j) + ": "))
                 matriz[i][j] = a
-        print("LU: " + str(decomposicaoLU(matriz))
+        print("LU: " + str(decomposicaoLU(matriz)))
     elif resposta == 2:
         tam = int(input("Escolha o tamanho da matriz quadrada: "))
         matriz = [[0.0]*tam for i in range(tam)]
