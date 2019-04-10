@@ -22,9 +22,9 @@ def powerMethod(A):
             X0 = Y
         R = math.fabs(y1-y0)/y1
         k+=1
-    print "Autovalor: " + str(y1)
-    print "Autovetor: " + str(X0)
-    print "Iteracoes: " + str(k)
+    print("Autovalor: " + str(y1))
+    print("Autovetor: " + str(X0))
+    print("Iteracoes: " + str(k))
 
 # Calculo dos autovalores e autovetores correspondentes utilizando o metodo de Jacobi    
 def jacobiNumerico(A):
@@ -190,4 +190,4 @@ def transposta(matriz):
 #powerMethod([[3,2,0],[2,3,-1],[0,-1,3]])
 #gaussSeidel([[3,-1,-1],[-1,3,-1],[-1,-1,3]],[1,2,1])
 #jacobiIterativo([[3,-1,-1],[-1,3,-1],[-1,-1,3]],[1,2,1])
-#print jacobiNumerico([[3,0.4,5],[0.4,4,0.1],[5,0.1,-2]])
+#print(jacobiNumerico([[3,0.4,5],[0.4,4,0.1],[5,0.1,-2]])
