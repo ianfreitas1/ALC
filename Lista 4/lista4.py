@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 tolerancia = 10**(-4)
 numMaxDeIteracoes = 100
@@ -98,9 +99,77 @@ def inverseInterpolationHelper(x1, x2, x3, y1, y2, y3):
     c = (y1*y2*x3) / ((y3 - y1)*(y3 - y2))
     return a + b + c
 
-def metodoDeNewtonParaEquacoesNaoLineares(vetorSolucaoInicial):
-    pass
-    
+def metodoDeNewtonParaEquacoesNaoLineares(listaDeFuncoes, vetorSolucaoInicial):
+    dimensao = len(vetorSolucaoInicial)
+    xAtual = vetorSolucaoInicial
+    for i in range(numMaxDeIteracoes):
+        matrizJacobiano = criarMatrizJacobiano(listaDeFuncoes, xAtual)
+        vetorF = criarVetorF(listaDeFuncoes, xAtual)
+        inversaJacobiano = np.linalg.inv(matrizJacobiano)
+        deltaX = multiplicacaoMatrizVetor(inversaJacobiano, vetorF)
+        deltaX = [x*(-1) for x in deltaX]
+        xAtual = somaDeVetores(xAtual, deltaX)
+        tolk = norma(deltaX)/norma(xAtual)
+        if (tolk < tolerancia):
+            break
+    return xAtual
+
+def criarMatrizJacobiano(listaDeFuncoes, vetorSolucaoInicial):
+    dimensao = len(vetorSolucaoInicial)
+    jacobiano = [[0 for i in range(dimensao)] for j in range(dimensao)]
+    for i in range(dimensao):
+        for j in range(dimensao):
+            jacobiano[i][j] = derivadaParcial(listaDeFuncoes[i], vetorSolucaoInicial, j)
+    return jacobiano
+
+def derivadaParcial(funcaoDeVariasVariaveis, vetorSolucaoInicial, indiceArgumentoDerivada):
+    h = 10**(-10)
+    aux = funcaoDeVariasVariaveis(vetorSolucaoInicial)
+    novoVetor = vetorSolucaoInicial
+    novoVetor[indiceArgumentoDerivada] += h
+    top = funcaoDeVariasVariaveis(novoVetor) - aux
+    bottom = h
+    return top/bottom
+
+def criarVetorF(listaDeFuncoes, vetorSolucaoInicial):
+    dimensao = len(vetorSolucaoInicial)
+    vetorF = [0 for i in range(dimensao)]
+    for i in range(dimensao):
+        vetorF[i] = listaDeFuncoes[i](vetorSolucaoInicial)
+    return vetorF
+
+def multiplicacaoMatrizVetor(m, v):
+    rows = len(m)
+    w = [0]*rows
+    irange = range(len(v))
+    sum = 0
+    for j in range(rows):
+        r = m[j]
+        for i in irange:
+            sum += r[i]*v[i]
+        w[j],sum = sum,0
+    return w
+
+def somaDeVetores(vetor1, vetor2):
+    dimensao = len(vetor1)
+    resultado = [0 for i in range(dimensao)]
+    for i in range(dimensao):
+        resultado[i] = vetor1[i] + vetor2[i]
+    return resultado
+
+def norma(vetor):
+    dimensao = len(vetor)
+    norma = 0
+    for i in range(dimensao):
+        norma += vetor[i]*vetor[i]
+    return norma**(0.5)
+
+def funcaoDeVariasVariaveis1(listaDeVariaveis):
+    return listaDeVariaveis[0] + 2*listaDeVariaveis[1] - 2
+
+def funcaoDeVariasVariaveis2(listaDeVariaveis):
+    return listaDeVariaveis[0]*listaDeVariaveis[0] + 4*listaDeVariaveis[1]*listaDeVariaveis[1] - 4
+
 def funcao(x):
     return x*x - 4*math.cos(x)
 
@@ -108,3 +177,8 @@ def funcao(x):
 #print(metodoDeNewton(10))
 #print(metodoSecante(10))
 #print(metodoDaInterpolacaoInversa(3,5,10))
+#print(derivadaParcial(funcaoDeVariasVariaveis2, [2,3], 1))
+#print(funcaoDeVariasVariaveis2([2,3]))
+#criarMatrizJacobiano([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3])
+#criarVetorF([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3])
+print(metodoDeNewtonParaEquacoesNaoLineares([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3]))
