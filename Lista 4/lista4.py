@@ -148,47 +148,29 @@ def metodoDeBroyden(listaDeFuncoes, vetorSolucaoInicial):
 
 
 def criarMatrizJacobiano(listaDeFuncoes, vetorSolucaoInicial):
-    dimensao = len(vetorSolucaoInicial)
-    jacobiano = [[0 for i in range(dimensao)] for j in range(dimensao)]
-    for i in range(dimensao):
-        for j in range(dimensao):
+    dimensao1 = len(listaDeFuncoes)
+    dimensao2 = len(vetorSolucaoInicial)
+    jacobiano = [[0 for i in range(dimensao2)] for j in range(dimensao1)]
+    for i in range(dimensao1):
+        for j in range(dimensao2):
             jacobiano[i][j] = derivadaParcial(listaDeFuncoes[i], vetorSolucaoInicial, j)
     return jacobiano
 
 def derivadaParcial(funcaoDeVariasVariaveis, vetorSolucaoInicial, indiceArgumentoDerivada):
     h = 10**(-10)
     aux = funcaoDeVariasVariaveis(vetorSolucaoInicial)
-    novoVetor = vetorSolucaoInicial
+    novoVetor = vetorSolucaoInicial[:]
     novoVetor[indiceArgumentoDerivada] += h
     top = funcaoDeVariasVariaveis(novoVetor) - aux
     bottom = h
     return top/bottom
 
 def criarVetorF(listaDeFuncoes, vetorSolucaoInicial):
-    dimensao = len(vetorSolucaoInicial)
+    dimensao = len(listaDeFuncoes)
     vetorF = [0 for i in range(dimensao)]
     for i in range(dimensao):
         vetorF[i] = listaDeFuncoes[i](vetorSolucaoInicial)
     return vetorF
-
-def multiplicacaoMatrizVetor(m, v):
-    rows = len(m)
-    w = [0]*rows
-    irange = range(len(v))
-    sum = 0
-    for j in range(rows):
-        r = m[j]
-        for i in irange:
-            sum += r[i]*v[i]
-        w[j],sum = sum,0
-    return w
-
-def somaDeVetores(vetor1, vetor2):
-    dimensao = len(vetor1)
-    resultado = [0 for i in range(dimensao)]
-    for i in range(dimensao):
-        resultado[i] = vetor1[i] + vetor2[i]
-    return resultado
 
 def norma(vetor):
     dimensao = len(vetor)
@@ -205,6 +187,77 @@ def broydenHelper(vetorA, vetorB):
         for j in range(dimensao):
             resultado[i][j] = vetorA[i]*vetorB[j]
     return resultado
+
+def funcaoDeVariasVariaveis1(listaDeVariaveis):
+    return listaDeVariaveis[0] + 2*listaDeVariaveis[1] - 2
+
+def funcaoDeVariasVariaveis2(listaDeVariaveis):
+    return listaDeVariaveis[0]*listaDeVariaveis[0] + 4*listaDeVariaveis[1]*listaDeVariaveis[1] - 4
+
+def funcao(x):
+    return x*x - 4*math.cos(x)
+
+def minimosQuadrados(listaDePontosXY, vetorSolucaoInicialB):
+    xAtual = vetorSolucaoInicialB
+    listaDeFuncoes = [funcaoRegressao1, funcaoRegressao2, funcaoRegressao3]
+    for i in range (numMaxDeIteracoes):
+        jacobiano = criarMatrizJacobiano(listaDeFuncoes, xAtual)
+        jacobianoTransposto = map(list, zip(*jacobiano))
+        #jacobianoTransposto = transposta(jacobiano)
+        vetorF = criarVetorF(listaDeFuncoes,xAtual)
+        a = np.linalg.inv(multiplyMatrices(jacobianoTransposto,jacobiano))
+        b = multiplicacaoMatrizEscalar(a,-1)
+        c = multiplicacaoMatrizVetor(jacobianoTransposto,vetorF)
+        deltaB = multiplicacaoMatrizVetor(b,c)
+        xAtual = somaDeVetores(xAtual, deltaB)
+        tolk = norma(deltaB)/norma(xAtual)
+        if (tolk < tolerancia):
+            break
+    return xAtual
+
+def funcaoRegressao1(listaDeVariaveis):
+    ponto = [1, 1.995]
+    return math.exp((ponto[0]**listaDeVariaveis[0])/listaDeVariaveis[1]) - ponto[1]
+
+def funcaoRegressao2(listaDeVariaveis):
+    ponto = [2, 1.410]
+    return math.exp((ponto[0]**listaDeVariaveis[0])/listaDeVariaveis[1]) - ponto[1]
+
+def funcaoRegressao3(listaDeVariaveis):
+    ponto = [3, 1.260]
+    return math.exp((ponto[0]**listaDeVariaveis[0])/listaDeVariaveis[1]) - ponto[1]
+
+# Retorna a transposta de uma matriz
+def transposta(matriz):
+    n1 = len(matriz) #3
+    n2 = len(matriz[0]) #2
+    resp = [[0.0]*n2 for i in range(n1)]
+    for i in range(n2):
+        for j in range(n1):
+            resp[j][i] = matriz[i][j]
+    return resp
+
+# Multiplica duas matrizes
+def multiplyMatrices(X, Y):
+    result = [[0.0 for i in range(len(X))] for j in range(len(Y[0]))]
+    for i in range(len(X)):
+    # iterate through columns of Y
+        for j in range(len(Y[0])):
+        # iterate through rows of Y
+            for k in range(len(Y)):
+                result[i][j] += X[i][k] * Y[k][j]
+    return result
+def multiplicacaoMatrizVetor(m, v):
+    rows = len(m)
+    w = [0]*rows
+    irange = range(len(v))
+    sum = 0
+    for j in range(rows):
+        r = m[j]
+        for i in irange:
+            sum += r[i]*v[i]
+        w[j],sum = sum,0
+    return w
 
 def somaDeMatrizes(matrizA, matrizB):
     dimensao = len(matrizA)
@@ -223,61 +276,20 @@ def multiplicacaoVetores(A, B):
                 s += A[i]*B[i]
     return s
 
-def funcaoDeVariasVariaveis1(listaDeVariaveis):
-    return listaDeVariaveis[0] + 2*listaDeVariaveis[1] - 2
-
-def funcaoDeVariasVariaveis2(listaDeVariaveis):
-    return listaDeVariaveis[0]*listaDeVariaveis[0] + 4*listaDeVariaveis[1]*listaDeVariaveis[1] - 4
-
-def funcao(x):
-    return x*x - 4*math.cos(x)
-
-# Retorna a transposta de uma matriz
-def transposta(matriz):
-    n = len(matriz)
-    resp = [[0.0]*n for i in range(n)]
-    for i in range(n):
-        for j in range(n):
-            resp[j][i] = matriz[i][j]
-    return resp
-
-# Multiplica duas matrizes
-def multiplyMatrices(X, Y):
-    n = len(X)
-    result = [[0.0 for j in range(n)] for i in range(n)]
-    for i in range(len(X)):
-        for j in range(len(Y[0])):
-            for k in range(len(Y)):
-                result[i][j] += X[i][k] * Y[k][j]
-    return result
+def somaDeVetores(vetor1, vetor2):
+    dimensao = len(vetor1)
+    resultado = [0 for i in range(dimensao)]
+    for i in range(dimensao):
+        resultado[i] = vetor1[i] + vetor2[i]
+    return resultado
 
 def multiplicacaoMatrizEscalar(X, escalar):
     n = len(X)
     resultado = [[0.0 for j in range(n)] for i in range(n)]
     for i in range(len(X)):
-        for j in range (len(X))
+        for j in range (len(X)):
             resultado[i][j] = X[i][j] * escalar
-    print resultado
-
-
-
-def minimosQuadrados(listaDeFuncoes, vetorSolucaoInicial):
-    dimensao = len(vetorSolucaoInicial)
-    xAtual = vetorSolucaoInicial
-    for i in range (numMaxDeIteracoes):
-        jacobiano = criarMatrizJacobiano(listaDeFuncoes, vetorSolucaoInicial)
-        jacobianoTransposto = transposta(jacobiano)
-        vetorF = criarVetorF(listaDeFuncoes,vetorSolucaoInicial)
-        a = np.linalg.inv(multiplyMatrices(jacobianoTransposto,jacobiano))
-        b = multiplicacaoMatrizVetor(a,-1)
-        c = multiplicacaoMatrizVetor(jacobianoTransposto,vetorF)
-        deltaB = multiplyMatrices(b,c)
-        xAtual = somaDeVetores(xAtual, deltaX)
-        tolk = norma(deltaX)/norma(xAtual)
-        if (tolk < tolerancia):
-            break
-    return xAtual
-
+    return resultado
 
 #print(metodoDaBissecao(0,10))
 #print(metodoDeNewton(10))
@@ -288,8 +300,7 @@ def minimosQuadrados(listaDeFuncoes, vetorSolucaoInicial):
 #criarMatrizJacobiano([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3])
 #criarVetorF([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3])
 #print(metodoDeNewtonParaEquacoesNaoLineares([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3]))
-<<<<<<< HEAD
-#print(minimosQuadrados(,)[0,1])
-=======
-print(metodoDeBroyden([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3]))
->>>>>>> 389dcfc7cc6ff0b73f9545793fb03d3b5301feeb
+#print(minimosQuadrados([[1,1.995],[2,1.410],[3,1.260]], [0,1]))
+#print(metodoDeBroyden([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3]))
+#print(derivadaParcial(funcaoRegressao1, [0,1], 1))
+
