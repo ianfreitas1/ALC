@@ -100,7 +100,6 @@ def inverseInterpolationHelper(x1, x2, x3, y1, y2, y3):
     return a + b + c
 
 def metodoDeNewtonParaEquacoesNaoLineares(listaDeFuncoes, vetorSolucaoInicial):
-    dimensao = len(vetorSolucaoInicial)
     xAtual = vetorSolucaoInicial
     for i in range(numMaxDeIteracoes):
         matrizJacobiano = criarMatrizJacobiano(listaDeFuncoes, xAtual)
@@ -113,6 +112,40 @@ def metodoDeNewtonParaEquacoesNaoLineares(listaDeFuncoes, vetorSolucaoInicial):
         if (tolk < tolerancia):
             break
     return xAtual
+
+def metodoDeBroyden(listaDeFuncoes, vetorSolucaoInicial):
+    dimensao = len(vetorSolucaoInicial)
+    xAtual = vetorSolucaoInicial
+    jacobianoB = criarMatrizJacobiano(listaDeFuncoes, vetorSolucaoInicial)
+    jacobiano = [[0 for i in range(dimensao)] for j in range(dimensao)]
+    for i in range(numMaxDeIteracoes):
+        for k in range(dimensao):
+            for j in range(dimensao):
+                jacobiano[k][j] = jacobianoB[k][j]
+        vetorF = criarVetorF(listaDeFuncoes, xAtual)
+        inversaJacobiano = np.linalg.inv(jacobiano)
+        deltaX = multiplicacaoMatrizVetor(inversaJacobiano, vetorF)
+        deltaX = [x*(-1) for x in deltaX]
+        xAtual = somaDeVetores(xAtual, deltaX)
+        vetorF2 = criarVetorF(listaDeFuncoes, xAtual)
+        vetorFnegativo = [x*(-1) for x in vetorF]
+        yK = somaDeVetores(vetorF2, vetorFnegativo)
+        tolk = norma(deltaX)/norma(xAtual)
+        if (tolk < tolerancia):
+            break
+        else:
+            resultMultiplicacaoJacobianoDeltaX = multiplicacaoMatrizVetor(jacobianoB, deltaX)
+            resultMultiplicacaoJacobianoDeltaX = [x*(-1) for x in resultMultiplicacaoJacobianoDeltaX]
+            bottom = multiplicacaoVetores(deltaX, deltaX)
+            top = somaDeVetores(yK, resultMultiplicacaoJacobianoDeltaX)
+            top3 = broydenHelper(top, deltaX)
+            for k in range(len(jacobianoB)):
+                for j in range(len(jacobianoB)):
+                    jacobianoB[k][j] = top3[k][j]/bottom
+            jacobianoB = somaDeMatrizes(jacobiano, jacobianoB)
+    
+    return xAtual
+
 
 def criarMatrizJacobiano(listaDeFuncoes, vetorSolucaoInicial):
     dimensao = len(vetorSolucaoInicial)
@@ -162,7 +195,33 @@ def norma(vetor):
     norma = 0
     for i in range(dimensao):
         norma += vetor[i]*vetor[i]
+
     return norma**(0.5)
+
+def broydenHelper(vetorA, vetorB):
+    dimensao = len(vetorA)
+    resultado = [[0 for i in range(dimensao)] for j in range(dimensao)]
+    for i in range(dimensao):
+        for j in range(dimensao):
+            resultado[i][j] = vetorA[i]*vetorB[j]
+    return resultado
+
+def somaDeMatrizes(matrizA, matrizB):
+    dimensao = len(matrizA)
+    resultado = [[0 for i in range(dimensao)] for j in range(dimensao)]
+    for i in range(dimensao):
+        for j in range(dimensao):
+            resultado[i][j] = matrizA[i][j] + matrizB[i][j]
+
+    return resultado
+
+def multiplicacaoVetores(A, B):
+    s = 0
+    for i in range(len(A)):
+        for j in range(len(B)):
+            if (i==j):
+                s += A[i]*B[i]
+    return s
 
 def funcaoDeVariasVariaveis1(listaDeVariaveis):
     return listaDeVariaveis[0] + 2*listaDeVariaveis[1] - 2
@@ -229,4 +288,8 @@ def minimosQuadrados(listaDeFuncoes, vetorSolucaoInicial):
 #criarMatrizJacobiano([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3])
 #criarVetorF([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3])
 #print(metodoDeNewtonParaEquacoesNaoLineares([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3]))
+<<<<<<< HEAD
 #print(minimosQuadrados(,)[0,1])
+=======
+print(metodoDeBroyden([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3]))
+>>>>>>> 389dcfc7cc6ff0b73f9545793fb03d3b5301feeb
