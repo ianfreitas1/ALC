@@ -173,6 +173,53 @@ def funcaoDeVariasVariaveis2(listaDeVariaveis):
 def funcao(x):
     return x*x - 4*math.cos(x)
 
+# Retorna a transposta de uma matriz
+def transposta(matriz):
+    n = len(matriz)
+    resp = [[0.0]*n for i in range(n)]
+    for i in range(n):
+        for j in range(n):
+            resp[j][i] = matriz[i][j]
+    return resp
+
+# Multiplica duas matrizes
+def multiplyMatrices(X, Y):
+    n = len(X)
+    result = [[0.0 for j in range(n)] for i in range(n)]
+    for i in range(len(X)):
+        for j in range(len(Y[0])):
+            for k in range(len(Y)):
+                result[i][j] += X[i][k] * Y[k][j]
+    return result
+
+def multiplicacaoMatrizEscalar(X, escalar):
+    n = len(X)
+    resultado = [[0.0 for j in range(n)] for i in range(n)]
+    for i in range(len(X)):
+        for j in range (len(X))
+            resultado[i][j] = X[i][j] * escalar
+    print resultado
+
+
+
+def minimosQuadrados(listaDeFuncoes, vetorSolucaoInicial):
+    dimensao = len(vetorSolucaoInicial)
+    xAtual = vetorSolucaoInicial
+    for i in range (numMaxDeIteracoes):
+        jacobiano = criarMatrizJacobiano(listaDeFuncoes, vetorSolucaoInicial)
+        jacobianoTransposto = transposta(jacobiano)
+        vetorF = criarVetorF(listaDeFuncoes,vetorSolucaoInicial)
+        a = np.linalg.inv(multiplyMatrices(jacobianoTransposto,jacobiano))
+        b = multiplicacaoMatrizVetor(a,-1)
+        c = multiplicacaoMatrizVetor(jacobianoTransposto,vetorF)
+        deltaB = multiplyMatrices(b,c)
+        xAtual = somaDeVetores(xAtual, deltaX)
+        tolk = norma(deltaX)/norma(xAtual)
+        if (tolk < tolerancia):
+            break
+    return xAtual
+
+
 #print(metodoDaBissecao(0,10))
 #print(metodoDeNewton(10))
 #print(metodoSecante(10))
@@ -181,4 +228,5 @@ def funcao(x):
 #print(funcaoDeVariasVariaveis2([2,3]))
 #criarMatrizJacobiano([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3])
 #criarVetorF([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3])
-print(metodoDeNewtonParaEquacoesNaoLineares([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3]))
+#print(metodoDeNewtonParaEquacoesNaoLineares([funcaoDeVariasVariaveis1, funcaoDeVariasVariaveis2], [2,3]))
+#print(minimosQuadrados(,)[0,1])
