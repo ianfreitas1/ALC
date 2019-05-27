@@ -40,8 +40,11 @@ def derivadaCentralRichard(funcao, x, deltaX, p):
     return resultado
 
 def funcao(x):
-    return math.sin(x)
+    return 1 - math.exp(-(x/5)**2)
 
-print(derivadaPassoFrenteRichard(funcao, 1, 0.5, 1))
-print(derivadaPassoTrasRichard(funcao, 1, 0.5, 1))
-print(derivadaCentralRichard(funcao, 1, 0.5, 1))
+print(derivadaPassoFrente(funcao, 6, 0.5))
+print(derivadaPassoTras(funcao, 6, 0.5))
+print(derivadaCentral(funcao, 6, 0.5))
+print(derivadaPassoFrenteRichard(funcao, 6, 0.5, 2))
+print(derivadaPassoTrasRichard(funcao, 6, 0.5, 2))
+print(derivadaCentralRichard(funcao, 6, 0.5, 2))

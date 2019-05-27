@@ -3,6 +3,7 @@ sys.path.append('../Lista 2/')
 from lista2 import jacobiIterativo
 import math
 
+#Integracao numerica onde a e b sao os limites de integracao
 def integracaoPolinomial(funcao, a, b, numPontos):
     deltaX = float(abs(b-a)) / (numPontos - 1)
     pontos = []
@@ -20,6 +21,7 @@ def integracaoPolinomial(funcao, a, b, numPontos):
         soma += pesos[i]*funcao(pontos[i])
     print(soma)
 
+#Integracao pelo metodo da quadratura de Gauss onde a e b sao os limites de integracao
 def quadraturaDeGauss(funcao, a, b, numPontos):
     pesos = W.get(numPontos).get("pesos")
     pontos = W.get(numPontos).get("pontos")

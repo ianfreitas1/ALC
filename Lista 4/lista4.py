@@ -4,6 +4,8 @@ import numpy as np
 tolerancia = 10**(-4)
 numMaxDeIteracoes = 100
 
+#Funcao que encontra uma unica raiz de uma equaçao nao linear pelo metodo da bissecao
+#Os argumentos intervalMin e intervalMax sao os extremos do intervalo conhecido [a, b]
 def metodoDaBissecao(intervalMin, intervalMax):
     numIteracoes = 0
     diferencaDoIntervalo = abs(intervalMax - intervalMin)
@@ -18,6 +20,8 @@ def metodoDaBissecao(intervalMin, intervalMax):
         numIteracoes += 1
     return "Ponto em que f(x) = 0: " + str(pontoMedio) + "\nNumero de iteracoes: " + str(numIteracoes) + "\n"
 
+#Funcao que encontra uma unica raiz de uma equaçao nao linear pelo metodo de Newton
+#Chute inicial eh um numero inteiro
 def metodoDeNewton(chuteInicial):
     numIteracoes = 0
     xAnterior = chuteInicial
@@ -29,7 +33,7 @@ def metodoDeNewton(chuteInicial):
             numIteracoes += 1
         else:
             break
-    if (numIteracoes == 99):
+    if (numIteracoes == numMaxDeIteracoes-1):
         print("Convergencia nao alcancada")
     return "Ponto em que f(x) = 0: " + str(xAtual) + "\nNumero de iteracoes: " + str(numIteracoes)
 
@@ -41,6 +45,8 @@ def derivada(funcao, valorDerivada):
 
     return resultado
 
+#Funcao que encontra uma unica raiz de uma equaçao nao linear pelo metodo Secante
+#Chute inicial eh um numero inteiro
 def metodoSecante(chuteInicial):
     numIteracoes = 0
     deltaX = 0.001
@@ -59,14 +65,17 @@ def metodoSecante(chuteInicial):
         else:
             break
 
-    if (numIteracoes == 99):
+    if (numIteracoes == numMaxDeIteracoes-1):
         print("Convergencia nao alcancada")
 
     return "Ponto em que f(x) = 0: " + str(xProx) + "\nNumero de iteracoes: " + str(numIteracoes)
 
+#Funcao auxiliar do metodo Secante utilizado em cada iteracao para calculo do proximo valor de X
 def secantHelper(xAnterior, xAtual, funcaoAnterior, funcaoAtual):
     return float((funcaoAtual*(xAtual - xAnterior))/(funcaoAtual - funcaoAnterior))
 
+#Funcao que encontra uma unica raiz de uma equaçao nao linear pelo metodo da interpolacao inversa
+#x1, x2 e x3 sao numeros inteiros em que x1 < x2 < x3
 def metodoDaInterpolacaoInversa(x1, x2, x3):
     numIteracoes = 0
     xAnterior = 10**(36)
@@ -91,16 +100,22 @@ def metodoDaInterpolacaoInversa(x1, x2, x3):
         else:
             break
 
+    if (numIteracoes == numMaxDeIteracoes-1):
+        print("Convergencia nao alcancada")
+
     return "Ponto em que f(x) = 0: " + str(xAtual) + "\nNumero de iteracoes: " + str(numIteracoes)
 
+#Funcao auxiliar do metodo da interpolacao inversa utilizada em cada iteracao para calculo do X
 def inverseInterpolationHelper(x1, x2, x3, y1, y2, y3):
     a = (y2*y3*x1) / ((y1 - y2)*(y1 - y3))
     b = (y1*y3*x2) / ((y2 - y1)*(y2 - y3))
     c = (y1*y2*x3) / ((y3 - y1)*(y3 - y2))
     return a + b + c
 
+#Solucao de um sistema de equacoes nao lineares pelo metodo de Newton
 def metodoDeNewtonParaEquacoesNaoLineares(listaDeFuncoes, vetorSolucaoInicial):
     xAtual = vetorSolucaoInicial
+    numIteracoes = 0
     for i in range(numMaxDeIteracoes):
         matrizJacobiano = criarMatrizJacobiano(listaDeFuncoes, xAtual)
         vetorF = criarVetorF(listaDeFuncoes, xAtual)
@@ -109,11 +124,18 @@ def metodoDeNewtonParaEquacoesNaoLineares(listaDeFuncoes, vetorSolucaoInicial):
         deltaX = [x*(-1) for x in deltaX]
         xAtual = somaDeVetores(xAtual, deltaX)
         tolk = norma(deltaX)/norma(xAtual)
+        numIteracoes += 1
         if (tolk < tolerancia):
             break
+
+    if (numIteracoes == numMaxDeIteracoes-1):
+        print("Convergencia nao alcancada")
+
     return xAtual
 
+#Solucao de um sistema de equacoes nao lineares pelo metodo de Broyden
 def metodoDeBroyden(listaDeFuncoes, vetorSolucaoInicial):
+    numIteracoes = 0
     dimensao = len(vetorSolucaoInicial)
     xAtual = vetorSolucaoInicial
     jacobianoB = criarMatrizJacobiano(listaDeFuncoes, vetorSolucaoInicial)
@@ -127,7 +149,7 @@ def metodoDeBroyden(listaDeFuncoes, vetorSolucaoInicial):
         deltaX = multiplicacaoMatrizVetor(inversaJacobiano, vetorF)
         deltaX = [x*(-1) for x in deltaX]
         xAtual = somaDeVetores(xAtual, deltaX)
-        vetorF2 = criarVetorF(listaDeFuncoes, xAtual)
+        vetorF2 = criarVetorF(listaDeFuncoes, xAtual)   
         vetorFnegativo = [x*(-1) for x in vetorF]
         yK = somaDeVetores(vetorF2, vetorFnegativo)
         tolk = norma(deltaX)/norma(xAtual)
@@ -144,9 +166,11 @@ def metodoDeBroyden(listaDeFuncoes, vetorSolucaoInicial):
                     jacobianoB[k][j] = top3[k][j]/bottom
             jacobianoB = somaDeMatrizes(jacobiano, jacobianoB)
     
+    if (numIteracoes == numMaxDeIteracoes-1):
+        print("Convergencia nao alcancada")
     return xAtual
 
-
+#Cria a matriz jacobiana, necessaria para os metodos de Newton e Broyden
 def criarMatrizJacobiano(listaDeFuncoes, vetorSolucaoInicial):
     dimensao1 = len(listaDeFuncoes)
     dimensao2 = len(vetorSolucaoInicial)
@@ -180,6 +204,7 @@ def norma(vetor):
 
     return norma**(0.5)
 
+#Funcao auxiliar do metodo de Broyden que multiplica dois vetores
 def broydenHelper(vetorA, vetorB):
     dimensao = len(vetorA)
     resultado = [[0 for i in range(dimensao)] for j in range(dimensao)]
@@ -197,7 +222,10 @@ def funcaoDeVariasVariaveis2(listaDeVariaveis):
 def funcao(x):
     return x*x - 4*math.cos(x)
 
+#Ajuste de uma funcao pelo metodo dos minimos quadrados
+#listaDePontosXY é uma lista de listas que contem os pontos X e os respectivos valores de Y
 def minimosQuadrados(listaDePontosXY, vetorSolucaoInicialB):
+    numIteracoes = 0
     xAtual = vetorSolucaoInicialB
     listaDeFuncoes = [funcaoRegressao1, funcaoRegressao2, funcaoRegressao3]
     for i in range (numMaxDeIteracoes):
@@ -211,8 +239,11 @@ def minimosQuadrados(listaDePontosXY, vetorSolucaoInicialB):
         deltaB = multiplicacaoMatrizVetor(b,c)
         xAtual = somaDeVetores(xAtual, deltaB)
         tolk = norma(deltaB)/norma(xAtual)
+        numIteracoes += 1
         if (tolk < tolerancia):
             break
+    if (numIteracoes == numMaxDeIteracoes-1):
+        print("Convergencia nao alcancada")
     return xAtual
 
 def funcaoRegressao1(listaDeVariaveis):
@@ -247,6 +278,8 @@ def multiplyMatrices(X, Y):
             for k in range(len(Y)):
                 result[i][j] += X[i][k] * Y[k][j]
     return result
+
+# Multiplica uma matriz por um vetor
 def multiplicacaoMatrizVetor(m, v):
     rows = len(m)
     w = [0]*rows
@@ -259,6 +292,7 @@ def multiplicacaoMatrizVetor(m, v):
         w[j],sum = sum,0
     return w
 
+# Soma de duas matrizes
 def somaDeMatrizes(matrizA, matrizB):
     dimensao = len(matrizA)
     resultado = [[0 for i in range(dimensao)] for j in range(dimensao)]
@@ -268,6 +302,7 @@ def somaDeMatrizes(matrizA, matrizB):
 
     return resultado
 
+# Multiplica dois vetores
 def multiplicacaoVetores(A, B):
     s = 0
     for i in range(len(A)):
@@ -276,6 +311,7 @@ def multiplicacaoVetores(A, B):
                 s += A[i]*B[i]
     return s
 
+# Soma dois vetores
 def somaDeVetores(vetor1, vetor2):
     dimensao = len(vetor1)
     resultado = [0 for i in range(dimensao)]
@@ -283,6 +319,7 @@ def somaDeVetores(vetor1, vetor2):
         resultado[i] = vetor1[i] + vetor2[i]
     return resultado
 
+# Multiplica matriz por um escalar
 def multiplicacaoMatrizEscalar(X, escalar):
     n = len(X)
     resultado = [[0.0 for j in range(n)] for i in range(n)]
