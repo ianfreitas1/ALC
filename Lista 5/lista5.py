@@ -33,9 +33,27 @@ def quadraturaDeGauss(funcao, a, b, numPontos):
     for i in range(numPontos):
         somaIntegral += funcao(incognitasX[i])*pesos[i]
     return somaIntegral*L/2
+
+def estimaValorIntegral(funcao,a,b):
     
+    m = (b + a)/2
+    pontoMedio = funcao(m)*(b-a)
+
+    trapezio = ((funcao(a)+funcao(b))/2)*(b-a)
+    erro = (trapezio - pontoMedio)/3 
+
+    simpson = (funcao(a) + funcao(m) + funcao(b))*((b-a)/2)
+
+    valorIntegralPontoMedio = pontoMedio + erro
+    valorIntegralTrapezio = trapezio - 2*erro
+    #valorIntegralSimpson = simpson - 
+
+    print valorIntegralPontoMedio
+    print valorIntegralTrapezio
+    #print valorIntegralSimpson
+
 def funcao(x):
-    return 2+x+2*x*x
+    return math.exp(x)
 
 W = {2:{"pontos": [-0.5773502691896257,0.5773502691896257],"pesos": [1.0,1.0]},
         3:{"pontos": [0.0,-0.7745966692414834,0.7745966692414834],"pesos": [0.8888888888888888,0.5555555555555556,0.5555555555555556]},
@@ -48,3 +66,4 @@ W = {2:{"pontos": [-0.5773502691896257,0.5773502691896257],"pesos": [1.0,1.0]},
         10:{"pontos": [-0.1488743389816312,0.1488743389816312,-0.4333953941292472,0.4333953941292472,-0.6794095682990244,0.6794095682990244,-0.8650633666889845,0.8650633666889845,-0.9739065285171717,0.9739065285171717],"pesos": [0.2955242247147529,0.2955242247147529,0.2692667193099963,0.2692667193099963,0.2190863625159820,0.2190863625159820,0.1494513491505806,0.1494513491505806,0.0666713443086881,0.0666713443086881]}}
 #integracaoPolinomial(funcao, 0, 1, 5)
 #print(quadraturaDeGauss(funcao, 1, 3, 2))
+estimaValorIntegral(funcao,0,2)
