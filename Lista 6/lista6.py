@@ -1,3 +1,6 @@
+import matplotlib.pyplot as plt
+import math
+
 def metodoEuler(funcaoDiferencial, tInicial, tFinal, deltaT, resultadoCondicaoInicial):
     incognitasX = [resultadoCondicaoInicial]
     incognitasT = [tInicial]
@@ -42,6 +45,10 @@ def taylor2Ordem(funcaoDiferencial2Ordem, tInicial, tFinal, deltaT, xInicial, xL
         incognitasX.append(incognitasX[i] + xLinhaAtual*deltaT + x2Linhas*deltaT*deltaT/2)
         xLinhaAtual = xLinhaAtual + x2Linhas*deltaT
 
+    plt.plot(incognitasX, incognitasT)
+    plt.ylabel('T')
+    plt.xlabel('z(t)')
+    plt.show()
     return incognitasX
 
 def rungeKuttaNystron(funcaoDiferencial2Ordem, tInicial, tFinal, deltaT, xInicial, xLinhaInicial):
@@ -60,6 +67,10 @@ def rungeKuttaNystron(funcaoDiferencial2Ordem, tInicial, tFinal, deltaT, xInicia
         incognitasX.append(incognitasX[i] + deltaT*(xLinhaAtual + (K1 + K2 + K3)/3))
         xLinhaAtual = xLinhaAtual + (K1 + 2*K2 + 2*K3 + K4)/3
 
+    plt.plot(incognitasX, incognitasT)
+    plt.ylabel('T')
+    plt.xlabel('z(t)')
+    plt.show()
     return incognitasX
 
 def funcaoDiferencial(t, funcao):
@@ -71,5 +82,5 @@ def funcaoDiferencial2Ordem(t, funcao, funcaoDiferencial):
 #metodoEuler(funcaoDiferencial,0,1,0.1,0)
 #print(rungeKutta2(funcaoDiferencial, 0, 1, 0.1, 0))
 #print(rungeKutta4(funcaoDiferencial, 0, 1, 0.1, 0))
-#print(taylor2Ordem(funcaoDiferencial2Ordem, 0, 1, 0.1, 0, 0))
+print(taylor2Ordem(funcaoDiferencial2Ordem, 0, 1, 0.1, 0, 0))
 print(rungeKuttaNystron(funcaoDiferencial2Ordem, 0, 1, 0.1, 0, 0))
