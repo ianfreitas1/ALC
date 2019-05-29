@@ -131,6 +131,7 @@ def metodoDeNewtonParaEquacoesNaoLineares(listaDeFuncoes, vetorSolucaoInicial):
     if (numIteracoes == numMaxDeIteracoes-1):
         print("Convergencia nao alcancada")
 
+    print("Numero de iteracoes: " + str(numIteracoes))
     return xAtual
 
 #Solucao de um sistema de equacoes nao lineares pelo metodo de Broyden
@@ -153,6 +154,7 @@ def metodoDeBroyden(listaDeFuncoes, vetorSolucaoInicial):
         vetorFnegativo = [x*(-1) for x in vetorF]
         yK = somaDeVetores(vetorF2, vetorFnegativo)
         tolk = norma(deltaX)/norma(xAtual)
+        numIteracoes += 1
         if (tolk < tolerancia):
             break
         else:
@@ -168,6 +170,7 @@ def metodoDeBroyden(listaDeFuncoes, vetorSolucaoInicial):
     
     if (numIteracoes == numMaxDeIteracoes-1):
         print("Convergencia nao alcancada")
+    print("Numero de iteracoes: " + str(numIteracoes))    
     return xAtual
 
 #Cria a matriz jacobiana, necessaria para os metodos de Newton e Broyden
