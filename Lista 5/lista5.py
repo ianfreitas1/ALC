@@ -1,6 +1,8 @@
 import sys
-sys.path.append('../Lista 2/')
-from lista2 import jacobiIterativo
+sys.path.append('../Lista 1/')
+from lista1 import decomposicaoLU
+from lista1 import subFrente
+from lista1 import subTras
 import math
 
 #Integracao numerica onde a e b sao os limites de integracao
@@ -15,10 +17,11 @@ def integracaoPolinomial(funcao, a, b, numPontos):
     for i in range(numPontos):
         for j in range(numPontos):
             matrizDeVandermonde[i][j] = pontos[j]**i
-    pesos = jacobiIterativo(matrizDeVandermonde, vetorB)
+    matrizA = decomposicaoLU(matrizDeVandermonde)
+    x = (subTras(matrizA, subFrente(matrizA, vetorB)))
     soma = 0
     for i in range(numPontos):
-        soma += pesos[i]*funcao(pontos[i])
+        soma += x[i]*funcao(pontos[i])
     print(soma)
 
 #Integracao pelo metodo da quadratura de Gauss onde a e b sao os limites de integracao
@@ -53,7 +56,7 @@ def estimaValorIntegral(funcao,a,b):
     print valorIntegralSimpson
 
 def funcao(x):
-    return 2+x+2*(x**2)
+    return math.exp(-(x*x))
 
 W = {2:{"pontos": [-0.5773502691896257,0.5773502691896257],"pesos": [1.0,1.0]},
         3:{"pontos": [0.0,-0.7745966692414834,0.7745966692414834],"pesos": [0.8888888888888888,0.5555555555555556,0.5555555555555556]},
@@ -64,6 +67,6 @@ W = {2:{"pontos": [-0.5773502691896257,0.5773502691896257],"pesos": [1.0,1.0]},
         8:{"pontos": [-0.1834346424956498,0.1834346424956498,-0.5255324099163290,0.5255324099163290,-0.7966664774136267,0.7966664774136267,-0.9602898564975363,0.9602898564975363],"pesos": [0.3626837833783620,0.3626837833783620,0.3137066458778873,0.3137066458778873,0.2223810344533745,0.2223810344533745,0.1012285362903763,0.1012285362903763]},
         9:{"pontos": [0.0,-0.8360311073266358,0.8360311073266358,-0.9681602395076261,0.9681602395076261,-0.3242534234038089,0.3242534234038089,-0.6133714327005904,0.6133714327005904],"pesos": [0.3302393550012598,0.1806481606948574,0.1806481606948574,0.0812743883615744,0.0812743883615744,0.3123470770400029,0.3123470770400029,0.2606106964029354,0.2606106964029354]},
         10:{"pontos": [-0.1488743389816312,0.1488743389816312,-0.4333953941292472,0.4333953941292472,-0.6794095682990244,0.6794095682990244,-0.8650633666889845,0.8650633666889845,-0.9739065285171717,0.9739065285171717],"pesos": [0.2955242247147529,0.2955242247147529,0.2692667193099963,0.2692667193099963,0.2190863625159820,0.2190863625159820,0.1494513491505806,0.1494513491505806,0.0666713443086881,0.0666713443086881]}}
-#integracaoPolinomial(funcao, 0, 1, 5)
-print(quadraturaDeGauss(funcao, 1, 3, 2))
+integracaoPolinomial(funcao, 0, 1, 5)
+#print(quadraturaDeGauss(funcao, 1, 3, 2))
 #estimaValorIntegral(funcao,2,4)
