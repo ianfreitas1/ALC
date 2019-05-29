@@ -1,10 +1,10 @@
 import math
 import numpy as np
 
-tolerancia = 10**(-4)
+tolerancia = (10**(-4))
 numMaxDeIteracoes = 100
 
-#Funcao que encontra uma unica raiz de uma equaçao nao linear pelo metodo da bissecao
+#Funcao que encontra uma unica raiz de uma equacao nao linear pelo metodo da bissecao
 #Os argumentos intervalMin e intervalMax sao os extremos do intervalo conhecido [a, b]
 def metodoDaBissecao(intervalMin, intervalMax):
     numIteracoes = 0
@@ -20,7 +20,7 @@ def metodoDaBissecao(intervalMin, intervalMax):
         numIteracoes += 1
     return "Ponto em que f(x) = 0: " + str(pontoMedio) + "\nNumero de iteracoes: " + str(numIteracoes) + "\n"
 
-#Funcao que encontra uma unica raiz de uma equaçao nao linear pelo metodo de Newton
+#Funcao que encontra uma unica raiz de uma equacao nao linear pelo metodo de Newton
 #Chute inicial eh um numero inteiro
 def metodoDeNewton(chuteInicial):
     numIteracoes = 0
@@ -45,7 +45,7 @@ def derivada(funcao, valorDerivada):
 
     return resultado
 
-#Funcao que encontra uma unica raiz de uma equaçao nao linear pelo metodo Secante
+#Funcao que encontra uma unica raiz de uma equacao nao linear pelo metodo Secante
 #Chute inicial eh um numero inteiro
 def metodoSecante(chuteInicial):
     numIteracoes = 0
@@ -74,7 +74,7 @@ def metodoSecante(chuteInicial):
 def secantHelper(xAnterior, xAtual, funcaoAnterior, funcaoAtual):
     return float((funcaoAtual*(xAtual - xAnterior))/(funcaoAtual - funcaoAnterior))
 
-#Funcao que encontra uma unica raiz de uma equaçao nao linear pelo metodo da interpolacao inversa
+#Funcao que encontra uma unica raiz de uma equacao nao linear pelo metodo da interpolacao inversa
 #x1, x2 e x3 sao numeros inteiros em que x1 < x2 < x3
 def metodoDaInterpolacaoInversa(x1, x2, x3):
     numIteracoes = 0
@@ -223,7 +223,7 @@ def funcao(x):
     return x*x - 4*math.cos(x)
 
 #Ajuste de uma funcao pelo metodo dos minimos quadrados
-#listaDePontosXY é uma lista de listas que contem os pontos X e os respectivos valores de Y
+#listaDePontosXY e uma lista de listas que contem os pontos X e os respectivos valores de Y
 def minimosQuadrados(listaDePontosXY, vetorSolucaoInicialB):
     numIteracoes = 0
     xAtual = vetorSolucaoInicialB

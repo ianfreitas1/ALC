@@ -36,24 +36,24 @@ def quadraturaDeGauss(funcao, a, b, numPontos):
 
 def estimaValorIntegral(funcao,a,b):
     
-    m = (b + a)/2
+    m = (b + a)/2.0
     pontoMedio = funcao(m)*(b-a)
 
     trapezio = ((funcao(a)+funcao(b))/2)*(b-a)
     erro = (trapezio - pontoMedio)/3 
 
-    simpson = (funcao(a) + funcao(m) + funcao(b))*((b-a)/2)
+    simpson = (funcao(a) + (4 * funcao(m)) + funcao(b))*((b-a)/6.0)
 
     valorIntegralPontoMedio = pontoMedio + erro
     valorIntegralTrapezio = trapezio - 2*erro
-    #valorIntegralSimpson = simpson - 
+    valorIntegralSimpson = simpson  
 
     print valorIntegralPontoMedio
     print valorIntegralTrapezio
-    #print valorIntegralSimpson
+    print valorIntegralSimpson
 
 def funcao(x):
-    return math.exp(x)
+    return 2+x+2*(x**2)
 
 W = {2:{"pontos": [-0.5773502691896257,0.5773502691896257],"pesos": [1.0,1.0]},
         3:{"pontos": [0.0,-0.7745966692414834,0.7745966692414834],"pesos": [0.8888888888888888,0.5555555555555556,0.5555555555555556]},
@@ -65,5 +65,5 @@ W = {2:{"pontos": [-0.5773502691896257,0.5773502691896257],"pesos": [1.0,1.0]},
         9:{"pontos": [0.0,-0.8360311073266358,0.8360311073266358,-0.9681602395076261,0.9681602395076261,-0.3242534234038089,0.3242534234038089,-0.6133714327005904,0.6133714327005904],"pesos": [0.3302393550012598,0.1806481606948574,0.1806481606948574,0.0812743883615744,0.0812743883615744,0.3123470770400029,0.3123470770400029,0.2606106964029354,0.2606106964029354]},
         10:{"pontos": [-0.1488743389816312,0.1488743389816312,-0.4333953941292472,0.4333953941292472,-0.6794095682990244,0.6794095682990244,-0.8650633666889845,0.8650633666889845,-0.9739065285171717,0.9739065285171717],"pesos": [0.2955242247147529,0.2955242247147529,0.2692667193099963,0.2692667193099963,0.2190863625159820,0.2190863625159820,0.1494513491505806,0.1494513491505806,0.0666713443086881,0.0666713443086881]}}
 #integracaoPolinomial(funcao, 0, 1, 5)
-#print(quadraturaDeGauss(funcao, 1, 3, 2))
-estimaValorIntegral(funcao,0,2)
+print(quadraturaDeGauss(funcao, 1, 3, 2))
+#estimaValorIntegral(funcao,2,4)
